@@ -1,9 +1,12 @@
 package com.kabouzeid.gramophone.ui.fragments.player;
 
 import android.animation.Animator;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
+
+import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -40,9 +43,14 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
     private Unbinder unbinder;
 
     @BindView(R.id.player_album_cover_viewpager)
-    ViewPager viewPager;
+    public ViewPager viewPager;
     @BindView(R.id.player_favorite_icon)
     ImageView favoriteIcon;
+
+    @BindView(R.id.player_rewind_icon)
+    ImageView rewindIcon;
+    @BindView(R.id.player_fast_forward_icon)
+    ImageView fastForwardIcon;
 
     @BindView(R.id.player_lyrics)
     FrameLayout lyricsLayout;
@@ -51,6 +59,7 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
     @BindView(R.id.player_lyrics_line2)
     TextView lyricsLine2;
 
+    public boolean cardMode = false;
     private Callbacks callbacks;
     private int currentPosition;
 
@@ -64,20 +73,48 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
         return view;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        float width = displaymetrics.widthPixels;
+        float mediumPercentage = (width)*50/100;
+
         viewPager.addOnPageChangeListener(this);
         viewPager.setOnTouchListener(new View.OnTouchListener() {
             GestureDetector gestureDetector = new GestureDetector(getActivity(), new GestureDetector.SimpleOnGestureListener() {
                 @Override
-                public boolean onSingleTapConfirmed(MotionEvent e) {
-                    if (callbacks != null) {
-                        callbacks.onToolbarToggled();
-                        return true;
+                public boolean onDoubleTap(MotionEvent e) {
+                    float xValue = e.getX();
+
+                    // left
+                    if (xValue < mediumPercentage) {
+                        if (callbacks != null) {
+                            callbacks.onRewind();
+                            scaleAnimation(rewindIcon);
+                            return true;
+                        }
+                    } else {
+                        if (callbacks != null) {
+                            callbacks.onFastForward();
+                            scaleAnimation(fastForwardIcon);
+                            return true;
+                        }
                     }
-                    return super.onSingleTapConfirmed(e);
+
+                    return super.onDoubleTap(e);
                 }
+                //                @Override
+//                public boolean onSingleTapConfirmed(MotionEvent e) {
+//                    if (callbacks != null) {
+//                        callbacks.onToolbarToggled();
+//                        return true;
+//                    }
+//                    return super.onSingleTapConfirmed(e);
+//                }
             });
 
             @Override
@@ -113,7 +150,7 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
     }
 
     private void updatePlayingQueue() {
-        viewPager.setAdapter(new AlbumCoverPagerAdapter(getFragmentManager(), MusicPlayerRemote.getPlayingQueue()));
+        viewPager.setAdapter(new AlbumCoverPagerAdapter(getFragmentManager(), cardMode, MusicPlayerRemote.getPlayingQueue()));
         viewPager.setCurrentItem(MusicPlayerRemote.getPosition());
         onPageSelected(MusicPlayerRemote.getPosition());
     }
@@ -145,16 +182,20 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
     }
 
     public void showHeartAnimation() {
-        favoriteIcon.clearAnimation();
+        scaleAnimation(favoriteIcon);
+    }
 
-        favoriteIcon.setAlpha(0f);
-        favoriteIcon.setScaleX(0f);
-        favoriteIcon.setScaleY(0f);
-        favoriteIcon.setVisibility(View.VISIBLE);
-        favoriteIcon.setPivotX(favoriteIcon.getWidth() / 2);
-        favoriteIcon.setPivotY(favoriteIcon.getHeight() / 2);
+    public void scaleAnimation(View view) {
+        view.clearAnimation();
 
-        favoriteIcon.animate()
+        view.setAlpha(0f);
+        view.setScaleX(0f);
+        view.setScaleY(0f);
+        view.setVisibility(View.VISIBLE);
+        view.setPivotX(view.getWidth() / 2);
+        view.setPivotY(view.getHeight() / 2);
+
+        view.animate()
                 .setDuration(ViewUtil.PHONOGRAPH_ANIM_TIME / 2)
                 .setInterpolator(new DecelerateInterpolator())
                 .scaleX(1f)
@@ -163,10 +204,10 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
                 .setListener(new SimpleAnimatorListener() {
                     @Override
                     public void onAnimationCancel(Animator animation) {
-                        favoriteIcon.setVisibility(View.INVISIBLE);
+                        view.setVisibility(View.INVISIBLE);
                     }
                 })
-                .withEndAction(() -> favoriteIcon.animate()
+                .withEndAction(() -> view.animate()
                         .setDuration(ViewUtil.PHONOGRAPH_ANIM_TIME / 2)
                         .setInterpolator(new AccelerateInterpolator())
                         .scaleX(0f)
@@ -262,5 +303,9 @@ public class PlayerAlbumCoverFragment extends AbsMusicServiceFragment implements
         void onFavoriteToggled();
 
         void onToolbarToggled();
+
+        void onRewind();
+
+        void onFastForward();
     }
 }

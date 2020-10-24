@@ -2,6 +2,7 @@ package com.kabouzeid.gramophone.ui.fragments.player.card;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -9,14 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +21,15 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
@@ -49,6 +51,7 @@ import com.kabouzeid.gramophone.model.lyrics.Lyrics;
 import com.kabouzeid.gramophone.ui.activities.base.AbsSlidingMusicPanelActivity;
 import com.kabouzeid.gramophone.ui.fragments.player.AbsPlayerFragment;
 import com.kabouzeid.gramophone.ui.fragments.player.PlayerAlbumCoverFragment;
+import com.kabouzeid.gramophone.ui.fragments.player.flat.FlatPlayerPlaybackControlsFragment;
 import com.kabouzeid.gramophone.util.ImageUtil;
 import com.kabouzeid.gramophone.util.MusicUtil;
 import com.kabouzeid.gramophone.util.Util;
@@ -60,7 +63,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbumCoverFragment.Callbacks, SlidingUpPanelLayout.PanelSlideListener {
+public class MixedPlayerFragment extends AbsPlayerFragment implements PlayerAlbumCoverFragment.Callbacks, SlidingUpPanelLayout.PanelSlideListener {
 
     private Unbinder unbinder;
 
@@ -82,7 +85,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
     private int lastColor;
 
-    private CardPlayerPlaybackControlsFragment playbackControlsFragment;
+    private FlatPlayerPlaybackControlsFragment playbackControlsFragment;
     private PlayerAlbumCoverFragment playerAlbumCoverFragment;
 
     private LinearLayoutManager layoutManager;
@@ -107,7 +110,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
             impl = new PortraitImpl(this);
         }
 
-        View view = inflater.inflate(R.layout.fragment_card_player, container, false);
+        View view = inflater.inflate(R.layout.fragment_mixed_player, container, false);
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -227,7 +230,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     }
 
     private void setUpSubFragments() {
-        playbackControlsFragment = (CardPlayerPlaybackControlsFragment) getChildFragmentManager().findFragmentById(R.id.playback_controls_fragment);
+        playbackControlsFragment = (FlatPlayerPlaybackControlsFragment) getChildFragmentManager().findFragmentById(R.id.playback_controls_fragment);
         playerAlbumCoverFragment = (PlayerAlbumCoverFragment) getChildFragmentManager().findFragmentById(R.id.player_album_cover_fragment);
 
         playerAlbumCoverFragment.setCallbacks(this);
@@ -275,6 +278,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         layoutManager.scrollToPositionWithOffset(MusicPlayerRemote.getPosition() + 1, 0);
     }
 
+    @SuppressLint("StaticFieldLeak")
     private void updateIsFavorite() {
         if (updateIsFavoriteTask != null) updateIsFavoriteTask.cancel(false);
         updateIsFavoriteTask = new AsyncTask<Song, Void, Boolean>() {
@@ -304,6 +308,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         }.execute(MusicPlayerRemote.getCurrentSong());
     }
 
+    @SuppressLint("StaticFieldLeak")
     private void updateLyrics() {
         if (updateLyricsAsyncTask != null) updateLyricsAsyncTask.cancel(false);
         final Song song = MusicPlayerRemote.getCurrentSong();
@@ -476,9 +481,9 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     }
 
     private static abstract class BaseImpl implements Impl {
-        protected CardPlayerFragment fragment;
+        protected MixedPlayerFragment fragment;
 
-        public BaseImpl(CardPlayerFragment fragment) {
+        public BaseImpl(MixedPlayerFragment fragment) {
             this.fragment = fragment;
         }
 
@@ -524,7 +529,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
         MediaEntryViewHolder currentSongViewHolder;
         Song currentSong = Song.EMPTY_SONG;
 
-        public PortraitImpl(CardPlayerFragment fragment) {
+        public PortraitImpl(MixedPlayerFragment fragment) {
             super(fragment);
         }
 
@@ -604,7 +609,7 @@ public class CardPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
     @SuppressWarnings("ConstantConditions")
     private static class LandscapeImpl extends BaseImpl {
-        public LandscapeImpl(CardPlayerFragment fragment) {
+        public LandscapeImpl(MixedPlayerFragment fragment) {
             super(fragment);
         }
 

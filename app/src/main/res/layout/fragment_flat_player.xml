@@ -59,8 +59,7 @@
             <FrameLayout
                 android:id="@+id/toolbar_container"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/toolbar_scrim_height"
-                android:background="@drawable/toolbar_gradient">
+                android:layout_height="@dimen/toolbar_scrim_height">
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/player_toolbar"

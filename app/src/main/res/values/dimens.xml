@@ -8,6 +8,9 @@
     <dimen name="toolbar_elevation">4dp</dimen>
     <dimen name="card_elevation">2dp</dimen>
 
+    <dimen name="player_cover_card_margin">56dp</dimen>
+
+
     <!-- 3x standard action bar height (56dp) -->
     <dimen name="toolbar_scrim_height">168dp</dimen>
 

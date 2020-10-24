@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.ColorInt;
+
+import android.util.TypedValue;
 import android.view.View;
 
 import com.kabouzeid.appthemehelper.ATH;
@@ -12,6 +14,7 @@ import com.kabouzeid.appthemehelper.common.ATHToolbarActivity;
 import com.kabouzeid.appthemehelper.util.ColorUtil;
 import com.kabouzeid.appthemehelper.util.MaterialDialogsUtil;
 import com.kabouzeid.gramophone.R;
+import com.kabouzeid.gramophone.util.PhonographColorUtil;
 import com.kabouzeid.gramophone.util.PreferenceUtil;
 import com.kabouzeid.gramophone.util.Util;
 
@@ -46,13 +49,13 @@ public abstract class AbsThemeActivity extends ATHToolbarActivity {
             final View statusBar = getWindow().getDecorView().getRootView().findViewById(R.id.status_bar);
             if (statusBar != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    statusBar.setBackgroundColor(ColorUtil.darkenColor(color));
+                    statusBar.setBackgroundColor(PhonographColorUtil.darkenColor(color));
                     setLightStatusbarAuto(color);
                 } else {
                     statusBar.setBackgroundColor(color);
                 }
             } else if (Build.VERSION.SDK_INT >= 21) {
-                getWindow().setStatusBarColor(ColorUtil.darkenColor(color));
+                getWindow().setStatusBarColor(PhonographColorUtil.darkenColor(color));
                 setLightStatusbarAuto(color);
             }
         }
@@ -80,7 +83,7 @@ public abstract class AbsThemeActivity extends ATHToolbarActivity {
     }
 
     public void setNavigationbarColorAuto() {
-        setNavigationbarColor(ThemeStore.navigationBarColor(this));
+        setNavigationbarColor(getNavigationbarColor());
     }
 
     public void setLightStatusbar(boolean enabled) {
@@ -89,5 +92,15 @@ public abstract class AbsThemeActivity extends ATHToolbarActivity {
 
     public void setLightStatusbarAuto(int bgColor) {
         setLightStatusbar(ColorUtil.isColorLight(bgColor));
+    }
+
+    public int getNavigationbarColor() {
+        TypedValue typedValue = new TypedValue();
+        if (this.getTheme().resolveAttribute(android.R.attr.windowBackground, typedValue, true)) {
+            // how to get color?
+            return typedValue.data;// **just add this line to your code!!**
+        }
+
+        return ThemeStore.navigationBarColor(this);
     }
 }

@@ -123,7 +123,7 @@ public abstract class AbsLibraryPagerRecyclerViewCustomGridSizeFragment<A extend
     protected void applyRecyclerViewPaddingForLayoutRes(@NonNull RecyclerView recyclerView, @LayoutRes int res) {
         int padding;
         if (res == R.layout.item_grid) {
-            padding = (int) (getResources().getDisplayMetrics().density * 2);
+            padding = (int) (getResources().getDisplayMetrics().density * 3);
         } else {
             padding = 0;
         }

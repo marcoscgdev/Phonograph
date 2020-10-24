@@ -101,6 +101,8 @@
     <string name="light_theme_name">Claro</string>
     <string name="dark_theme_name">Oscuro</string>
     <string name="black_theme_name">Negro (AMOLED)</string>
+    <string name="automatic_theme_name">Automático</string>
+    <string name="automatic_black_theme_name">Automático (AMOLED)</string>
     <string name="always">Siempre</string>
     <string name="only_on_wifi">Solo en Wi-Fi</string>
     <string name="never">Nunca</string>

@@ -163,6 +163,12 @@ public class MainActivity extends AbsSlidingMusicPanelActivity {
         View contentView = getLayoutInflater().inflate(R.layout.activity_main_drawer_layout, null);
         ViewGroup drawerContent = contentView.findViewById(R.id.drawer_content_container);
         drawerContent.addView(wrapSlidingMusicPanel(R.layout.activity_main_content));
+        if (getIntent() != null && getIntent().hasExtra("from_notification")
+                && getIntent().getBooleanExtra("from_notification", false)) {
+            getIntent().removeExtra("from_notification");
+            // sorry for that
+            new Handler().postDelayed(this::expandPanel, 500);
+        }
         return contentView;
     }
 

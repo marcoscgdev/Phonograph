@@ -36,7 +36,10 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="@dimen/tab_height"
+            android:background="?colorPrimary"
             app:tabContentStart="72dp"
+            app:tabIndicator="@drawable/tab_indicator"
+            app:tabIndicatorFullWidth="false"
             app:tabMode="scrollable" />
 
     </com.google.android.material.appbar.AppBarLayout>

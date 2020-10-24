@@ -42,6 +42,7 @@ public class PlayingNotificationImpl24 extends PlayingNotification {
                 ? R.drawable.ic_pause_white_24dp : R.drawable.ic_play_arrow_white_24dp;
 
         Intent action = new Intent(service, MainActivity.class);
+        action.putExtra("from_notification", true);
         action.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         final PendingIntent clickIntent = PendingIntent.getActivity(service, 0, action, 0);
 

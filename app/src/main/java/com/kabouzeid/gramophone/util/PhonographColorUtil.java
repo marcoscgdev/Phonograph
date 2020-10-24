@@ -1,7 +1,10 @@
 package com.kabouzeid.gramophone.util;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
+
 import androidx.annotation.ColorInt;
+import androidx.annotation.FloatRange;
 import androidx.annotation.Nullable;
 import androidx.palette.graphics.Palette;
 
@@ -9,6 +12,8 @@ import com.kabouzeid.appthemehelper.util.ColorUtil;
 
 import java.util.Collections;
 import java.util.Comparator;
+
+import static com.kabouzeid.appthemehelper.util.ColorUtil.shiftColor;
 
 /**
  * @author Karim Abou Zeid (kabouzeid)
@@ -73,5 +78,10 @@ public class PhonographColorUtil {
             backgroundColor = ColorUtil.lightenColor(backgroundColor);
         }
         return backgroundColor;
+    }
+
+    @ColorInt
+    public static int darkenColor(@ColorInt int color) {
+        return shiftColor(color, 0.8F);
     }
 }

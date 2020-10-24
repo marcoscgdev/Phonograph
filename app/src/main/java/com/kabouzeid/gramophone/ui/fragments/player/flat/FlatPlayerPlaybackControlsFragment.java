@@ -53,11 +53,13 @@ public class FlatPlayerPlaybackControlsFragment extends AbsMusicServiceFragment 
     ImageButton shuffleButton;
 
     @BindView(R.id.player_progress_slider)
-    SeekBar progressSlider;
+    public SeekBar progressSlider;
     @BindView(R.id.player_song_total_time)
     TextView songTotalTime;
     @BindView(R.id.player_song_current_progress)
     TextView songCurrentProgress;
+
+    public ImageButton playPauseFab = null;
 
     private PlayPauseDrawable playPauseDrawable;
 
@@ -87,6 +89,8 @@ public class FlatPlayerPlaybackControlsFragment extends AbsMusicServiceFragment 
         unbinder = ButterKnife.bind(this, view);
         setUpMusicControllers();
         updateProgressTextColor();
+
+        playPauseFab = playPauseButton;
     }
 
     @Override

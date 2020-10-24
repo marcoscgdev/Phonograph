@@ -260,6 +260,18 @@ public class MusicPlayerRemote {
         return -1;
     }
 
+    public static void rewind() {
+        if (musicService != null) {
+            musicService.seek(musicService.getSongProgressMillis() - 10000);
+        }
+    }
+
+    public static void fastForward() {
+        if (musicService != null) {
+            musicService.seek(musicService.getSongProgressMillis() + 10000);
+        }
+    }
+
     public static int getRepeatMode() {
         if (musicService != null) {
             return musicService.getRepeatMode();

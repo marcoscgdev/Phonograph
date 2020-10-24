@@ -34,15 +34,17 @@ public class AlbumCoverPagerAdapter extends CustomFragmentStatePagerAdapter {
 
     private AlbumCoverFragment.ColorReceiver currentColorReceiver;
     private int currentColorReceiverPosition = -1;
+    private boolean cardMode = false;
 
-    public AlbumCoverPagerAdapter(FragmentManager fm, List<Song> dataSet) {
+    public AlbumCoverPagerAdapter(FragmentManager fm, boolean cardMode, List<Song> dataSet) {
         super(fm);
+        this.cardMode = cardMode;
         this.dataSet = dataSet;
     }
 
     @Override
     public Fragment getItem(final int position) {
-        return AlbumCoverFragment.newInstance(dataSet.get(position));
+        return AlbumCoverFragment.newInstance(dataSet.get(position), cardMode);
     }
 
     @Override
@@ -77,6 +79,7 @@ public class AlbumCoverPagerAdapter extends CustomFragmentStatePagerAdapter {
 
     public static class AlbumCoverFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
         private static final String SONG_ARG = "song";
+        private static final String CARD_MODE_ARG = "card_mode";
 
         private Unbinder unbinder;
 
@@ -86,13 +89,15 @@ public class AlbumCoverPagerAdapter extends CustomFragmentStatePagerAdapter {
         private boolean isColorReady;
         private int color;
         private Song song;
+        private boolean cardMode;
         private ColorReceiver colorReceiver;
         private int request;
 
-        public static AlbumCoverFragment newInstance(final Song song) {
+        public static AlbumCoverFragment newInstance(final Song song, boolean cardMode) {
             AlbumCoverFragment frag = new AlbumCoverFragment();
             final Bundle args = new Bundle();
             args.putParcelable(SONG_ARG, song);
+            args.putBoolean(CARD_MODE_ARG, cardMode);
             frag.setArguments(args);
             return frag;
         }
@@ -101,11 +106,12 @@ public class AlbumCoverPagerAdapter extends CustomFragmentStatePagerAdapter {
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             song = getArguments().getParcelable(SONG_ARG);
+            cardMode = getArguments().getBoolean(CARD_MODE_ARG);
         }
 
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_album_cover, container, false);
+            View view = inflater.inflate(cardMode ? R.layout.fragment_album_cover_card : R.layout.fragment_album_cover, container, false);
             unbinder = ButterKnife.bind(this, view);
             return view;
         }
@@ -129,7 +135,7 @@ public class AlbumCoverPagerAdapter extends CustomFragmentStatePagerAdapter {
         }
 
         private void loadAlbumCover() {
-            SongGlideRequest.Builder.from(Glide.with(this), song)
+            SongGlideRequest.Builder.from(Glide.with(requireContext()), song)
                     .checkIgnoreMediaStore(getActivity())
                     .generatePalette(getActivity()).build()
                     .into(new PhonographColoredTarget(albumCover) {

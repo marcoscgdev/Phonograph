@@ -224,6 +224,7 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     private void setUpSubFragments() {
         playbackControlsFragment = (FlatPlayerPlaybackControlsFragment) getChildFragmentManager().findFragmentById(R.id.playback_controls_fragment);
         playerAlbumCoverFragment = (PlayerAlbumCoverFragment) getChildFragmentManager().findFragmentById(R.id.player_album_cover_fragment);
+        playerAlbumCoverFragment.cardMode = true;
 
         playerAlbumCoverFragment.setCallbacks(this);
     }
@@ -411,6 +412,16 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
     }
 
     @Override
+    public void onRewind() {
+        MusicPlayerRemote.rewind();
+    }
+
+    @Override
+    public void onFastForward() {
+        MusicPlayerRemote.fastForward();
+    }
+
+    @Override
     public void onPanelSlide(View view, float slide) {
     }
 
@@ -455,10 +466,11 @@ public class FlatPlayerFragment extends AbsPlayerFragment implements PlayerAlbum
 
         public AnimatorSet createDefaultColorChangeAnimatorSet(int newColor) {
             Animator backgroundAnimator = ViewUtil.createBackgroundColorTransition(fragment.playbackControlsFragment.getView(), fragment.lastColor, newColor);
+            Animator viewPagerAnimator = ViewUtil.createBackgroundColorTransition(fragment.playerAlbumCoverFragment.viewPager, fragment.lastColor, newColor);
             Animator statusBarAnimator = ViewUtil.createBackgroundColorTransition(fragment.playerStatusBar, fragment.lastColor, newColor);
 
             AnimatorSet animatorSet = new AnimatorSet();
-            animatorSet.playTogether(backgroundAnimator, statusBarAnimator);
+            animatorSet.playTogether(backgroundAnimator, viewPagerAnimator, statusBarAnimator);
 
             if (!ATHUtil.isWindowBackgroundDark(fragment.getActivity())) {
                 int adjustedLastColor = ColorUtil.isColorLight(fragment.lastColor) ? ColorUtil.darkenColor(fragment.lastColor) : fragment.lastColor;

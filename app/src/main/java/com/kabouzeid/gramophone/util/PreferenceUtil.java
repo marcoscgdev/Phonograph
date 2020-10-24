@@ -3,6 +3,8 @@ package com.kabouzeid.gramophone.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
@@ -144,6 +146,13 @@ public final class PreferenceUtil {
                 return R.style.Theme_Phonograph;
             case "black":
                 return R.style.Theme_Phonograph_Black;
+            case "auto":
+            case "auto_black":
+                if ((Resources.getSystem().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                        == Configuration.UI_MODE_NIGHT_YES) {
+                    return themePrefValue.equals("auto_black") ? R.style.Theme_Phonograph_Black : R.style.Theme_Phonograph;
+                } else return R.style.Theme_Phonograph_Light;
+
             case "light":
             default:
                 return R.style.Theme_Phonograph_Light;

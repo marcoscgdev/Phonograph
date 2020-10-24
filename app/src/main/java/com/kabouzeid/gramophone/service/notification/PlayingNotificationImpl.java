@@ -65,6 +65,7 @@ public class PlayingNotificationImpl extends PlayingNotification {
         linkButtons(notificationLayout, notificationLayoutBig);
 
         Intent action = new Intent(service, MainActivity.class);
+        action.putExtra("from_notification", true);
         action.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         final PendingIntent clickIntent = PendingIntent.getActivity(service, 0, action, 0);
         final PendingIntent deleteIntent = buildPendingIntent(service, MusicService.ACTION_QUIT, null);
